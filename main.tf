@@ -201,6 +201,7 @@ resource "aws_route" "public_internet_gateway_ipv6" {
 # Private routes
 # There are as many routing tables as the number of NAT gateways
 #################
+
 resource "aws_route_table" "private" {
   count = var.create_vpc && local.max_subnet_length > 0 ? local.nat_gateway_count : 0
 
@@ -309,8 +310,9 @@ resource "aws_route_table" "elasticache" {
 #################
 # Intra routes
 #################
+/* NCBI Modification - separate route tables optional, default yes */
 resource "aws_route_table" "intra" {
-  count = var.create_vpc && length(var.intra_subnets) > 0 ? 1 : 0
+  count = var.create_vpc && var.create_intra_subnet_route_table && length(var.intra_subnets) > 0 ? 1 : 0
 
   vpc_id = local.vpc_id
 
@@ -1045,7 +1047,7 @@ resource "aws_route_table_association" "elasticache" {
 }
 
 resource "aws_route_table_association" "intra" {
-  count = var.create_vpc && length(var.intra_subnets) > 0 ? length(var.intra_subnets) : 0
+  count = var.create_vpc && var.create_intra_subnet_route_table && length(var.intra_subnets) > 0 ? length(var.intra_subnets) : 0
 
   subnet_id      = element(aws_subnet.intra.*.id, count.index)
   route_table_id = element(aws_route_table.intra.*.id, 0)

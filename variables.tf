@@ -184,6 +184,14 @@ variable "intra_subnets" {
   default     = []
 }
 
+/* NCBI Modifications 2.70 */
+variable "create_intra_subnet_route_table" {
+  description = "Controls if separate route table for intra subnets should be created"
+  type        = bool
+  default     = true
+}
+/* End NCBI Modifications 2.70 */
+
 variable "create_database_subnet_route_table" {
   description = "Controls if separate route table for database should be created"
   type        = bool
